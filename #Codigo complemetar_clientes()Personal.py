@@ -8,7 +8,7 @@ def complementar_clientes(self):
 
             ruta_cliente = os.path.join(self.rutaSalida, "file.csv")
             if not os.path.exists(ruta_cliente):
-                print(f"[!] No existe el archivo filr.csv: {ruta_cliente}")
+                print(f"[!] No existe el archivo:")
                 return None
 
             try:
@@ -28,7 +28,7 @@ def complementar_clientes(self):
 
             ruta_busqueda = self.build_path("Datos", "seguros", "Produccion")
             if not os.path.exists(ruta_busqueda):
-                print(f"[!] No existe la ruta de Producción histrica: {ruta_busqueda}")
+                print(f"[!] No existe la ruta")
                 return dfc
 
             archivos_encontrados = []
@@ -40,7 +40,7 @@ def complementar_clientes(self):
                         archivos_encontrados.append(os.path.join(raiz, archivo))
 
             if not archivos_encontrados:
-                print(f"[!] No se encontraron archivos en Producción histrica: {ruta_busqueda}")
+                print(f"[!] No se encontraron archivos)
                 return dfc
 
             def prioridad_archivo(ruta):
@@ -59,7 +59,7 @@ def complementar_clientes(self):
             ruta_informes_parquet = os.path.join(self.rutaSalida, "Informes.parquet")
 
             if os.path.exists(ruta_informes_parquet):
-                print(f" Informes.parquet encontrado: {ruta_informes_parquet}")
+                print(f" file.parquet encontrado: {ruta_informes_parquet}")
             else:
                 print(f"[!] La promotora {self.promotora} no tiene Informes.parquet")
 
@@ -568,24 +568,39 @@ def complementar_clientes(self):
             print(f"\n Cambio de columnas: {len(columnas_entrada)} esperadas  {len(df_clientes_final.columns)} finales")
             print("=" * 80 + "\n")
 
-            ruta_cliente_actualizado = os.path.join(self.rutaSalida, "file.csv") df_clientes_final.to_csv(ruta_cliente_actualizado, sep=";", encoding="utf-8", index=False)
-            df_clientes_final.to_csv(ruta_file_actualizado, sep=";", encoding="utf-8", index=False)
-
-            # === VERIFICACIN FINAL: Releer el archivo para confirmar columnas ===
+            ruta_cliente_actualizado = os.path.join(self.rutaSalida, "file.csv")
+            df_clientes_final.to_csv(ruta_cliente_actualizado, sep=";", encoding="utf-8", index=False)
+            
+            # === VERIFICACIÓN FINAL: Releer el archivo para confirmar columnas ===
             print("\n" + "=" * 80)
-            print("[OK] VERIFICACIN FINAL DEL ARCHIVO EXPORTADO")
+            print("[OK] VERIFICACIÓN FINAL DEL ARCHIVO EXPORTADO")
             print("=" * 80)
-            df_verificacion = pd.read_csv(ruta_file_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=0)
+            
+            df_verificacion = pd.read_csv(
+                ruta_cliente_actualizado,
+                sep=";",
+                dtype=str,
+                encoding="utf-8",
+                nrows=0
+            )
+            
             print(f"\n[OK] file.csv EXPORTADO contiene ({len(df_verificacion.columns)}) columnas:")
             print(f"{list(df_verificacion.columns)}")
-            print(f"\n[DATA] Primera fila de datos (muestra):")
-            df_muestra = pd.read_csv(ruta_file_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=3)
+            
+            df_muestra = pd.read_csv(
+                ruta_cliente_actualizado,
+                sep=";",
+                dtype=str,
+                encoding="utf-8",
+                nrows=3
+            )
+            
             print(df_muestra.to_string())
             print("=" * 80 + "\n")
-
-            print(f"[OK] Archivo file.csv actualizado y guardado en: {ruta_file_actualizado}")
+            
+            print("[OK] Archivo file.csv actualizado y guardado correctamente.")
             print("=" * 80 + "\n")
-
+            
             return df_clientes_final
 
 
