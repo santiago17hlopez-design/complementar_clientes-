@@ -6,49 +6,23 @@ def complementar_clientes(self):
             print("[START] INICIANDO complementar_clientes")
             print("=" * 80)
 
-            ruta_cliente = os.path.join(self.rutaSalida, "Cliente.csv")
+            ruta_cliente = os.path.join(self.rutaSalida, "file.csv")
             if not os.path.exists(ruta_cliente):
-                print(f"[!] No existe el archivo Cliente.csv: {ruta_cliente}")
+                print(f"[!] No existe el archivo filr.csv: {ruta_cliente}")
                 return None
 
             try:
                 dfc = pd.read_csv(ruta_cliente, sep=";", dtype=str, encoding="utf-8")
-                print(f"[OK] Cliente.csv cargado | Filas: {len(dfc)}")
+                print(f"[OK] file.csv cargado | Filas: {len(dfc)}")
             except Exception as e:
-                print(f"[X] Error al cargar Cliente.csv: {e}")
+                print(f"[X] Error al cargar file.csv: {e}")
                 return None
 
             PROMOTORAS = {
-                "Arrendamiento Bogota": "2607",
-                "A-Seguro": "2604",
-                "Berrocal": "0003",
-                "Bolivariana": "2597",
-                "Business Partner": "0028",
-                "Cabecera": "2629",
-                "Cartago": "2634",
-                "Chicamocha": "2630",
-                "Enfoque": "2599",
-                "Gestionarte": "2612",
-                "Metropolitana": "2600",
-                "Milan": "2638",
-                "Panamericana": "2536",
-                "Pena Clausen": "2615",
-                "Piedra Pintada": "2645",
-                "Poblado": "2598",
-                "Programacion Administracion Seguros": "2617",
-                "Prollano": "2620",
-                "Prosear Seguros": "2608",
-                "Samur Barranquilla": "2626",
-                "Samur Cartagena": "2633",
-                "Sevillas": "2632",
-                "SotoMayor": "2631",
-                "Su Aliado": "2614",
-                "Torres Sierra": "2619",
-                "VenSer": "2603",
-                "Villaser": "4802",
-                "Sigma": "2601",
-            }
-
+    "Promoter A": "0001",
+    "Promoter B": "0002",
+    "Promoter C": "0003"
+}
             cod_oficina_actual = PROMOTORAS.get(self.promotora, "")
             print(f" Promotora: {self.promotora} | CodOficina: {cod_oficina_actual}")
 
@@ -173,7 +147,7 @@ def complementar_clientes(self):
                             df_temp_inf["Cliente"] = df_temp_inf["Cliente"].astype(str).str.strip().str.title()
 
                             df_temp_inf["Carpeta"] = "Informes"
-                            df_temp_inf["Ruta"] = ruta_informes_parquet
+                            df_temp_inf["Ruta"] = "source/file.parquet"
                             df_temp_inf["CodOficina"] = (
                                 df_inf["CodOficina"].astype(str).str.strip()
                                 if "CodOficina" in df_inf.columns
@@ -243,7 +217,7 @@ def complementar_clientes(self):
                     else:
                         # FIX A: Detectar la fila real del encabezado.
                         # Algunos xlsx tienen filas de filtro/titulo antes de los datos
-                        # (ej. 2025/2026 de Sigma tienen 2 filas extra al inicio).
+                        # (ej. prom a de file tienen 2 filas extra al inicio).
                         # Probamos primero con header=0; si ninguna columna conocida aparece,
                         # escaneamos las primeras filas para encontrar el header real.
                         _todas_conocidas = (
@@ -314,7 +288,7 @@ def complementar_clientes(self):
                 df_temp["Ruta"] = (
                     df_hist["Ruta"].astype(str).str.strip()
                     if "Ruta" in df_hist.columns
-                    else ruta_archivo
+                    else os.path.basename(ruta_archivo)
                 )
                 df_temp["CodOficina"] = (
                     df_hist["CodOficina"].astype(str).str.strip()
@@ -583,7 +557,7 @@ def complementar_clientes(self):
             num_cod_ciudad_orig = count_valid_non_blank(dfc_base["CodCiudad"]) if "CodCiudad" in dfc_base.columns else 0
 
             print(f"[OK] Filas finales después de unir y quitar duplicados: {len(df_clientes_final)}")
-            print(f"[OK] Valores originales en Cliente.csv: Archivo={num_archivo_orig}, CodOficinaU={num_cod_oficina_u_orig}, CodCiudad={num_cod_ciudad_orig}")
+            print(f"[OK] Valores originales en file.csv: Archivo={num_archivo_orig}, CodOficinaU={num_cod_oficina_u_orig}, CodCiudad={num_cod_ciudad_orig}")
             print(f"[OK] Valores conservados en salida: Archivo={num_archivo}, CodOficinaU={num_cod_oficina_u}, CodCiudad={num_cod_ciudad}")
 
             # === DESPUS DEL PROCESAMIENTO: Mostrar columnas finales ===
@@ -594,22 +568,22 @@ def complementar_clientes(self):
             print(f"\n Cambio de columnas: {len(columnas_entrada)} esperadas  {len(df_clientes_final.columns)} finales")
             print("=" * 80 + "\n")
 
-            ruta_cliente_actualizado = os.path.join(self.rutaSalida, "Cliente.csv")
-            df_clientes_final.to_csv(ruta_cliente_actualizado, sep=";", encoding="utf-8", index=False)
+            ruta_cliente_actualizado = os.path.join(self.rutaSalida, "file.csv") df_clientes_final.to_csv(ruta_cliente_actualizado, sep=";", encoding="utf-8", index=False)
+            df_clientes_final.to_csv(ruta_file_actualizado, sep=";", encoding="utf-8", index=False)
 
             # === VERIFICACIN FINAL: Releer el archivo para confirmar columnas ===
             print("\n" + "=" * 80)
             print("[OK] VERIFICACIN FINAL DEL ARCHIVO EXPORTADO")
             print("=" * 80)
-            df_verificacion = pd.read_csv(ruta_cliente_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=0)
-            print(f"\n[OK] Cliente.csv EXPORTADO contiene ({len(df_verificacion.columns)}) columnas:")
+            df_verificacion = pd.read_csv(ruta_file_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=0)
+            print(f"\n[OK] file.csv EXPORTADO contiene ({len(df_verificacion.columns)}) columnas:")
             print(f"{list(df_verificacion.columns)}")
             print(f"\n[DATA] Primera fila de datos (muestra):")
-            df_muestra = pd.read_csv(ruta_cliente_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=3)
+            df_muestra = pd.read_csv(ruta_file_actualizado, sep=";", dtype=str, encoding="utf-8", nrows=3)
             print(df_muestra.to_string())
             print("=" * 80 + "\n")
 
-            print(f"[OK] Archivo Cliente.csv actualizado y guardado en: {ruta_cliente_actualizado}")
+            print(f"[OK] Archivo file.csv actualizado y guardado en: {ruta_file_actualizado}")
             print("=" * 80 + "\n")
 
             return df_clientes_final
